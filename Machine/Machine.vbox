@@ -6,15 +6,16 @@
 ** Use VBoxManage or the VirtualBox Manager GUI to make changes.
 -->
 <VirtualBox xmlns="http://www.virtualbox.org/" version="1.15-windows">
-  <Machine uuid="{f162c4ad-e6e8-4738-95eb-81eeab50ab97}" name="Machine" OSType="VBoxBS_64" snapshotFolder="Snapshots" lastStateChange="2018-06-01T14:51:19Z">
+  <Machine uuid="{f162c4ad-e6e8-4738-95eb-81eeab50ab97}" name="Machine" OSType="VBoxBS_64" snapshotFolder="Snapshots" lastStateChange="2018-06-01T18:26:21Z">
     <MediaRegistry>
       <FloppyImages>
         <Image uuid="{a972c800-f87e-4f2f-8d70-d56b6026ebaf}" location="D:/DrepBewx/OneDrive/Programmering/os/core/boot/bootloader.img"/>
+        <Image uuid="{04d5dafe-ce8b-4db9-aef1-2409951dba79}" location="C:/Users/Emil/OneDrive/Programmering/os/core/boot/bootloader.img"/>
       </FloppyImages>
     </MediaRegistry>
     <ExtraData>
       <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
-      <ExtraDataItem name="GUI/LastNormalWindowPosition" value="640,259,720,442"/>
+      <ExtraDataItem name="GUI/LastNormalWindowPosition" value="640,208,720,442"/>
     </ExtraData>
     <Hardware>
       <CPU>
@@ -42,13 +43,13 @@
       </Network>
       <AudioAdapter driver="DirectSound" enabled="true" enabledIn="false"/>
       <GuestProperties>
-        <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1527864661870046000" flags=""/>
+        <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1527877512662675900" flags=""/>
       </GuestProperties>
     </Hardware>
     <StorageControllers>
       <StorageController name="Floppy" type="I82078" PortCount="1" useHostIOCache="true" Bootable="true">
         <AttachedDevice type="Floppy" hotpluggable="false" port="0" device="0">
-          <Image uuid="{a972c800-f87e-4f2f-8d70-d56b6026ebaf}"/>
+          <Image uuid="{04d5dafe-ce8b-4db9-aef1-2409951dba79}"/>
         </AttachedDevice>
       </StorageController>
       <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
