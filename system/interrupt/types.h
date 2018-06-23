@@ -10,5 +10,7 @@ typedef char s8;
 
 #define low_16(address) (u16)((address) & 0xFFFF)
 #define high_16(address) (u16)(((address) >> 16) & 0xFFFF)
+#define low_8(address) (u8)(divisor & 0xFF)
+#define high_8(address) (u8)( (divisor>>8) & 0xFF)
 
 #endif

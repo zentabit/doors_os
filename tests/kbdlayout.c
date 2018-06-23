@@ -1,11 +1,6 @@
-#define REG_KBD_CTRL 0x64
-#define REG_KBD_DATA 0x60
+#include <stdio.h>
 
-#define ENTR 0x1c
-#define BKSP 0x0e
-
-#define LEN_KBD 90
-const unsigned char kbd[] =
+const char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
   '9', '0', '-', '=', '\b',	/* Backspace */
@@ -13,8 +8,8 @@ const unsigned char kbd[] =
   'q', 'w', 'e', 'r',	/* 19 */
   't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',	/* Enter key */
     0,			/* 29   - Control */
-  'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'o',	/* 39 */
- '\'', 'a',   0,		/* Left shift */
+  'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',	/* 39 */
+ '\'', '`',   0,		/* Left shift */
  '\\', 'z', 'x', 'c', 'v', 'b', 'n',			/* 49 */
   'm', ',', '.', '/',   0,				/* Right shift */
   '*',
@@ -45,5 +40,5 @@ const unsigned char kbd[] =
     0,	/* All other keys are undefined */
 };
 
-
+const char test[6] = {'a', 'b', 'c', 'd'};
 
