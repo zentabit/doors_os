@@ -1,6 +1,6 @@
 #include "bool.h"
 #include "../interrupt/isr.h"
-#define WELCOME_MSG "\nDoors v0.0.1\nSystem initialised.\nWaiting for input...\nDOORS>"
+#define WELCOME_MSG "\nDoors v0.0.2\nSystem initialised.\nWaiting for input...\nDOORS>"
 
 
 
