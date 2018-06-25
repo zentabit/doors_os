@@ -4,12 +4,24 @@ void memcpy(char* src, char* dst, int nbytes){
     }
 }
 
-// void memset(char* start, int nbytes, char value){
-//     char *address = start;
-//     for(int i = 0; i < nbytes; i++){
-//         *address = value;
-//     }
-// }
+// really unsure if this works
+void* memset(char* start, char value, int nbytes){
+    char *address = start;
+    for(int i = 0; i < nbytes; i++){
+        *(address + i) = value;
+    }
+    return start;
+}
+
+void memory_set(unsigned char *dest, unsigned char val, unsigned int len) {
+    unsigned char *temp = (unsigned char *)dest;
+    for ( ; len != 0; len--) *temp++ = val;
+}
+
+void PANIC(char msg[]){
+    print(msg);
+    while(1){}
+}
 
 // char dec_to_ascii(){
 
