@@ -3,7 +3,7 @@ HEADERS = $(wildcard kernel/*.h drivers/*.h interrupt/*.h lib/*.h)
 
 OBJ = ${C_SOURCES:.c=.o interrupt/int.o}
 
-all: os.img
+all: os.img clean
 
 run: all
 	bochs
@@ -24,5 +24,5 @@ kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
 	nasm $< -f bin -i 'boot/' -o $@
 
 clean:
-	rm -rf *.bin *.dis *.o os.img kernel/*.bin
-	rm -rf kernel/*.o boot/*.bin drivers/*.o interrupt/*.o
+	rm -rf *.bin *.dis *.o kernel/*.bin
+	rm -rf kernel/*.o boot/*.bin drivers/*.o interrupt/*.o lib/*.o
