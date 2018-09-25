@@ -15,7 +15,7 @@ u32 placement_addr = 0x10000;
 //     return tmp;
 // }
 
-u32 kmalloc(u32 sz, int align, u32 *phys)
+u32 kmalloc_int(u32 sz, int align, u32 *phys)
 {
   if (align == 1 && (placement_addr & 0xFFFFF000)) // If the address is not already page-aligned
   {
@@ -32,14 +32,18 @@ u32 kmalloc(u32 sz, int align, u32 *phys)
   return tmp;
 } 
 
+u32 kmalloc(u32 sz){
+    kmalloc_int(sz, 0, 0);
+}
+
 u32 kmalloc_a(u32 sz){
-    kmalloc(sz, 1, 0);
+    kmalloc_int(sz, 1, 0);
 }
 
 u32 kmalloc_ap(u32 sz, u32 *phys){
-    kmalloc(sz, 1, phys);
+    kmalloc_int(sz, 1, phys);
 }
 
 u32 kmalloc_p(u32 sz, u32 *phys){
-    kmalloc(sz, 0, phys);
+    kmalloc_int(sz, 0, phys);
 }

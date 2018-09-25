@@ -3,7 +3,8 @@
 
 u32 *frames;
 u32 nframes;
-
+page_dir_t *current_dir;
+page_dir_t* kernel_dir;
 extern u32 placement_addr;
 
 #define INDEX_FROM_BIT(a) (a/(8*4))
@@ -17,6 +18,8 @@ static void set_frame(u32 frame_addr){
 
     frames[idx] |= (0x1 << off);
 }
+
+
 
 static void clear_frame(u32 frame_addr){
     u32 frame = frame_addr/0x1000;
@@ -83,11 +86,12 @@ void init_paging(){
     
     nframes = mem_end / 0x1000;
     frames = (u32*)kmalloc(INDEX_FROM_BIT(nframes));
-    memory_set(frames, 0, INDEX_FROM_BIT(nframes));
+    // memset(frames, 0, INDEX_FROM_BIT(nframes));
 
-    page_dir_t* kernel_dir = (page_dir_t*)kmalloc_a(sizeof(page_dir_t));
-    memory_set(kernel_dir, 0, sizeof(page_dir_t));
-    page_dir_t* current_dir = kernel_dir;
+    kernel_dir = (page_dir_t*)kmalloc_a(sizeof(page_dir_t));
+    kernel_dir->physical_addr = (u32)kernel_dir->tables_physical;
+    // memset(kernel_dir, 0, sizeof(page_dir_t));
+    current_dir = kernel_dir;
 
     int i = 0;
     while (i<placement_addr){
@@ -100,49 +104,82 @@ void init_paging(){
 }
 
 
-void switch_page_dir(page_dir_t *dir){
-    page_dir_t *current_dir = dir;
-    asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
+// void switch_page_dir(page_dir_t *dir){
+//     page_dir_t *current_dir = dir;
+//     asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
+//     u32 cr0;
+//     asm volatile("mov %%cr0, %0": "=r"(cr0));
+//     cr0 |= 0x80000000;
+//     asm volatile("mov %0, %%cr0":: "r"(cr0));
+// }
+
+void switch_page_dir(page_dir_t *dir)
+{
+    current_dir = dir;
+    asm volatile("mov %0, %%cr3":: "r"(dir->physical_addr));
     u32 cr0;
     asm volatile("mov %%cr0, %0": "=r"(cr0));
-    cr0 |= 0x80000000;
+    cr0 |= 0x80000000; // Enable paging!
     asm volatile("mov %0, %%cr0":: "r"(cr0));
 }
 
-page_t *get_page(u32 addr, int make, page_dir_t *dir){
-    addr /= 0x1000;
+// page_t *get_page(u32 addr, int make, page_dir_t *dir){
+//     addr /= 0x1000;
 
-    u32 table_idx = addr / 1024;
-    if(dir->tables[table_idx]){
-        return &dir->tables[table_idx]->pages[addr%1024];
-    } else if(make) {
-        u32 tmp;
-        dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
-        memory_set(dir->tables[table_idx], 0, 0x1000);
-        dir->tables_physical[table_idx] = tmp | 0x7;
-        return &dir->tables[table_idx]->pages[addr%1024];
-    } else {
-        return 0;
-    }
-}
+//     u32 table_idx = addr / 1024;
+//     if(dir->tables[table_idx]){
+//         return &dir->tables[table_idx]->pages[addr%1024];
+//     } else if(make) {
+//         u32 tmp;
+//         dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
+//         memset(dir->tables[table_idx], 0, 0x1000);
+//         dir->tables_physical[table_idx] = tmp | 0x7;
+//         return &dir->tables[table_idx]->pages[addr%1024];
+//     } else {
+//         return 0;
+//     }
+// }
 
+page_t *get_page(u32 address, int make, page_dir_t *dir)
+{
+   // Turn the address into an index.
+   address /= 0x1000;
+   // Find the page table containing this address.
+   u32 table_idx = address / 1024;
+   if (dir->tables[table_idx]) // If this table is already assigned
+   {
+       return &dir->tables[table_idx]->pages[address%1024];
+   }
+   else if(make)
+   {
+       u32 tmp;
+       dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
+       memset(dir->tables[table_idx], 0, 0x1000);
+       dir->tables_physical[table_idx] = tmp | 0x7; // PRESENT, RW, US.
+       return &dir->tables[table_idx]->pages[address%1024];
+   }
+   else
+   {
+       return 0;
+   }
+} 
 
 void page_fault(registers_t regs){
-    u32 faulting_addr;
-    asm volatile("mov %%cr2, %0" : "=r" (faulting_addr));
-    int present = !(regs.err_code & 0x1);
-    int rw =        regs.err_code & 0x2;
-    int us =        regs.err_code & 0x4;
-    int reserved =  regs.err_code & 0x8;
-    int id =        regs.err_code & 0x10;
+    // u32 faulting_addr;
+    // asm volatile("mov %%cr2, %0" : "=r" (faulting_addr));
+    // int present = !(regs.err_code & 0x1);
+    // int rw =        regs.err_code & 0x2;
+    // int us =        regs.err_code & 0x4;
+    // int reserved =  regs.err_code & 0x8;
+    // int id =        regs.err_code & 0x10;
 
     print("Page fault! (");
-    if (present) print("present ");
-    if (rw) print("read-only ");
-    if (us) print("user-mode ");
-    if (reserved) print("reserved ");
-    print(") at 0x");
-    // print_hex(faulting_addr);
-    print("\n");
-    PANIC("Page fault!");
+    // if (present) print("present ");
+    // if (rw) print("read-only ");
+    // if (us) print("user-mode ");
+    // if (reserved) print("reserved ");
+    // print(") at 0x");
+    // // print_hex(faulting_addr);
+    // print("\n");
+    // PANIC("Page fault!");
 }
