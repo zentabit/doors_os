@@ -14,8 +14,9 @@ void init(){
     reg_kbd();
     print("Keyboard initialised.\n");
 
-    // init_paging();
-    // print("Paging is now enabled.");
+    print("Trying to enable paging...");
+    init_paging();
+    print("Paging is now enabled.");
 
     init_timer(100);
     print(WELCOME_MSG);

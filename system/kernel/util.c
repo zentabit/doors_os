@@ -10,7 +10,6 @@ void* memset(char* start, char value, int nbytes){
     for(int i = 0; i < nbytes; i++){
         *(address + i) = value;
     }
-    return start;
 }
 
 void memory_set(unsigned char *dest, unsigned char val, unsigned int len) {
