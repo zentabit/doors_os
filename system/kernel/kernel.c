@@ -1,8 +1,5 @@
 #include "../interrupt/isr.h"
-#define WELCOME_MSG "\nDoors v0.0.2\nSystem initialised.\nWaiting for input...\nDOORS>"
-#include "../mem/paging.h"
-
-
+#define WELCOME_MSG "\nDoors v0.0.3\nSystem initialised.\nWaiting for input...\nDOORS>"
 
 void init(){
     clear_screen();
@@ -16,8 +13,8 @@ void init(){
     print("Keyboard initialised.\n");
 
     print("Trying to enable paging...");
-    initialise_paging();
-    print("Paging is now enabled.");
+    init_paging();
+    print("enabled.");
 
     init_timer(100);
     print(WELCOME_MSG);
