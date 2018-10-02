@@ -104,24 +104,24 @@ void init_paging(){
 }
 
 
-// void switch_page_dir(page_dir_t *dir){
-//     page_dir_t *current_dir = dir;
-//     asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
-//     u32 cr0;
-//     asm volatile("mov %%cr0, %0": "=r"(cr0));
-//     cr0 |= 0x80000000;
-//     asm volatile("mov %0, %%cr0":: "r"(cr0));
-// }
-
-void switch_page_dir(page_dir_t *dir)
-{
-    current_dir = dir;
-    asm volatile("mov %0, %%cr3":: "r"(dir->physical_addr));
+void switch_page_dir(page_dir_t *dir){
+    page_dir_t *current_dir = dir;
+    asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
     u32 cr0;
     asm volatile("mov %%cr0, %0": "=r"(cr0));
-    cr0 |= 0x00000001; // Enable paging!
+    cr0 |= 0x80000000;
     asm volatile("mov %0, %%cr0":: "r"(cr0));
 }
+
+// void switch_page_dir(page_dir_t *dir)
+// {
+//     current_dir = dir;
+//     asm volatile("mov %0, %%cr3":: "r"(dir->physical_addr));
+//     u32 cr0;
+//     asm volatile("mov %%cr0, %0": "=r"(cr0));
+//     cr0 |= 0x00000001; // Enable paging!
+//     asm volatile("mov %0, %%cr0":: "r"(cr0));
+// }
 
 // page_t *get_page(u32 addr, int make, page_dir_t *dir){
 //     addr /= 0x1000;

@@ -13,7 +13,7 @@ void init(){
     print("Keyboard initialised.\n");
 
     print("Trying to enable paging...");
-    init_paging();
+    // init_paging();
     print("enabled.");
 
     init_timer(100);

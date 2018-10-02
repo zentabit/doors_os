@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c interrupt/*.c lib/*.c mem/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h interrupt/*.h lib/*.h mem/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c interrupt/*.c lib/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h interrupt/*.h lib/*.h)
 
 OBJ = ${C_SOURCES:.c=.o interrupt/int.o}
 
