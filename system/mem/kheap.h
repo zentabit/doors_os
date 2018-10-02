@@ -1,4 +1,4 @@
-#include "types.h"
+#include "../lib/types.h"
 
 u32 kmalloc(u32 sz);
 u32 kmalloc_a(u32 sz);

@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c interrupt/*.c lib/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h interrupt/*.h lib/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c interrupt/*.c lib/*.c mem/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h interrupt/*.h lib/*.h mem/*.h)
 
 OBJ = ${C_SOURCES:.c=.o interrupt/int.o}
 
@@ -25,4 +25,4 @@ kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
 
 clean:
 	rm -rf *.bin *.dis *.o kernel/*.bin
-	rm -rf kernel/*.o boot/*.bin drivers/*.o interrupt/*.o lib/*.o
+	rm -rf kernel/*.o boot/*.bin drivers/*.o interrupt/*.o lib/*.o mem/*.o
