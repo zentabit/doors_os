@@ -22,10 +22,5 @@ void init(){
 
 void main(){
     init();
-
-    
-
-    // u32 *ptr = (u32*)0xA0000000;
-    // u32 do_page_fault = *ptr;
 }
 

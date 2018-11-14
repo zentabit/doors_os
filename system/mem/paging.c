@@ -19,8 +19,6 @@ static void set_frame(u32 frame_addr){
     frames[idx] |= (0x1 << off);
 }
 
-
-
 static void clear_frame(u32 frame_addr){
     u32 frame = frame_addr/0x1000;
     u32 idx = INDEX_FROM_BIT(frame);
@@ -104,65 +102,42 @@ void init_paging(){
 }
 
 
-void switch_page_dir(page_dir_t *dir){
-    page_dir_t *current_dir = dir;
-    asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
-    u32 cr0;
-    asm volatile("mov %%cr0, %0": "=r"(cr0));
-    cr0 |= 0x80000000;
-    asm volatile("mov %0, %%cr0":: "r"(cr0));
-}
-
-// void switch_page_dir(page_dir_t *dir)
-// {
-//     current_dir = dir;
-//     asm volatile("mov %0, %%cr3":: "r"(dir->physical_addr));
+// void switch_page_dir(page_dir_t *dir){
+//     page_dir_t *current_dir = dir;
+//     asm volatile("mov %0, %%cr3"::"r"(&dir->tables_physical));
 //     u32 cr0;
 //     asm volatile("mov %%cr0, %0": "=r"(cr0));
-//     cr0 |= 0x00000001; // Enable paging!
+//     cr0 |= 0x80000000;
 //     asm volatile("mov %0, %%cr0":: "r"(cr0));
 // }
 
-// page_t *get_page(u32 addr, int make, page_dir_t *dir){
-//     addr /= 0x1000;
-
-//     u32 table_idx = addr / 1024;
-//     if(dir->tables[table_idx]){
-//         return &dir->tables[table_idx]->pages[addr%1024];
-//     } else if(make) {
-//         u32 tmp;
-//         dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
-//         memset(dir->tables[table_idx], 0, 0x1000);
-//         dir->tables_physical[table_idx] = tmp | 0x7;
-//         return &dir->tables[table_idx]->pages[addr%1024];
-//     } else {
-//         return 0;
-//     }
-// }
-
-page_t *get_page(u32 address, int make, page_dir_t *dir)
+void switch_page_dir(page_dir_t *dir)
 {
-   // Turn the address into an index.
-   address /= 0x1000;
-   // Find the page table containing this address.
-   u32 table_idx = address / 1024;
-   if (dir->tables[table_idx]) // If this table is already assigned
-   {
-       return &dir->tables[table_idx]->pages[address%1024];
-   }
-   else if(make)
-   {
-       u32 tmp;
-       dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
-       memset(dir->tables[table_idx], 0, 0x1000);
-       dir->tables_physical[table_idx] = tmp | 0x7; // PRESENT, RW, US.
-       return &dir->tables[table_idx]->pages[address%1024];
-   }
-   else
-   {
-       return 0;
-   }
-} 
+    current_dir = dir;
+    asm volatile("mov %0, %%cr3":: "r"(dir->physical_addr));
+    u32 cr0;
+    asm volatile("mov %%cr0, %0": "=r"(cr0));
+    cr0 |= 0x00000001; // Enable paging!
+    asm volatile("mov %0, %%cr0":: "r"(cr0));
+}
+
+page_t *get_page(u32 addr, int make, page_dir_t *dir){
+    addr /= 0x1000;
+
+    u32 table_idx = addr / 1024;
+    if(dir->tables[table_idx]){
+        return &dir->tables[table_idx]->pages[addr%1024];
+    } else if(make) {
+        u32 tmp;
+        dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
+        memset(dir->tables[table_idx], 0, 0x1000);
+        dir->tables_physical[table_idx] = tmp | 0x7;
+        return &dir->tables[table_idx]->pages[addr%1024];
+    } else {
+        return 0;
+    }
+}
+
 
 void page_fault(registers_t regs){
     // u32 faulting_addr;
